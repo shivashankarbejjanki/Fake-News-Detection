@@ -23,30 +23,139 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
-st.markdown("""
-<style>
-    .main-header {
-        font-size: 3rem;
-        color: #1f77b4;
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-    .prediction-box {
-        padding: 1rem;
-        border-radius: 10px;
-        margin: 1rem 0;
-    }
-    .fake-news {
-        background-color: #ffebee;
-        border-left: 5px solid #f44336;
-    }
-    .real-news {
-        background-color: #e8f5e8;
-        border-left: 5px solid #4caf50;
-    }
-</style>
-""", unsafe_allow_html=True)
+# Initialize theme in session state
+if 'theme' not in st.session_state:
+    st.session_state.theme = 'light'
+
+def get_theme_css(theme):
+    """Get CSS styles based on selected theme"""
+    if theme == 'dark':
+        return """
+        <style>
+            .stApp {
+                background-color: #0e1117;
+                color: #fafafa;
+            }
+            .main-header {
+                font-size: 3rem;
+                color: #64b5f6;
+                text-align: center;
+                margin-bottom: 2rem;
+                text-shadow: 0 0 10px rgba(100, 181, 246, 0.3);
+            }
+            .prediction-box {
+                padding: 1.5rem;
+                border-radius: 15px;
+                margin: 1rem 0;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            }
+            .fake-news {
+                background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%);
+                border-left: 5px solid #ff1744;
+                color: white;
+            }
+            .real-news {
+                background: linear-gradient(135deg, #388e3c 0%, #4caf50 100%);
+                border-left: 5px solid #00e676;
+                color: white;
+            }
+            .theme-toggle {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 999;
+                background: #262730;
+                border: 2px solid #64b5f6;
+                border-radius: 25px;
+                padding: 8px 16px;
+                color: #64b5f6;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .theme-toggle:hover {
+                background: #64b5f6;
+                color: #262730;
+                transform: scale(1.05);
+            }
+            .sidebar .sidebar-content {
+                background-color: #262730;
+            }
+            .metric-container {
+                background-color: #262730;
+                padding: 1rem;
+                border-radius: 10px;
+                border: 1px solid #404040;
+            }
+            .stSelectbox > div > div {
+                background-color: #262730;
+                color: #fafafa;
+            }
+            .stTextArea > div > div > textarea {
+                background-color: #262730;
+                color: #fafafa;
+                border: 1px solid #404040;
+            }
+        </style>
+        """
+    else:  # light theme
+        return """
+        <style>
+            .stApp {
+                background-color: #ffffff;
+                color: #262626;
+            }
+            .main-header {
+                font-size: 3rem;
+                color: #1f77b4;
+                text-align: center;
+                margin-bottom: 2rem;
+                text-shadow: 0 2px 4px rgba(31, 119, 180, 0.1);
+            }
+            .prediction-box {
+                padding: 1.5rem;
+                border-radius: 15px;
+                margin: 1rem 0;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+            .fake-news {
+                background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+                border-left: 5px solid #f44336;
+                color: #d32f2f;
+            }
+            .real-news {
+                background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+                border-left: 5px solid #4caf50;
+                color: #2e7d32;
+            }
+            .theme-toggle {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 999;
+                background: #f5f5f5;
+                border: 2px solid #1f77b4;
+                border-radius: 25px;
+                padding: 8px 16px;
+                color: #1f77b4;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .theme-toggle:hover {
+                background: #1f77b4;
+                color: white;
+                transform: scale(1.05);
+            }
+            .metric-container {
+                background-color: #f8f9fa;
+                padding: 1rem;
+                border-radius: 10px;
+                border: 1px solid #e9ecef;
+            }
+        </style>
+        """
+
+# Apply theme CSS
+st.markdown(get_theme_css(st.session_state.theme), unsafe_allow_html=True)
 
 @st.cache_resource
 def load_model():
@@ -58,10 +167,50 @@ def load_model():
     return detector
 
 def main():
+    # Theme toggle in sidebar
+    st.sidebar.title("⚙️ Settings")
+    
+    # Theme selector
+    theme_options = {
+        "🌞 Light Mode": "light",
+        "🌙 Dark Mode": "dark"
+    }
+    
+    current_theme_label = "🌞 Light Mode" if st.session_state.theme == "light" else "🌙 Dark Mode"
+    selected_theme = st.sidebar.selectbox(
+        "Choose Theme:",
+        options=list(theme_options.keys()),
+        index=list(theme_options.values()).index(st.session_state.theme),
+        key="theme_selector"
+    )
+    
+    # Update theme if changed
+    new_theme = theme_options[selected_theme]
+    if new_theme != st.session_state.theme:
+        st.session_state.theme = new_theme
+        st.rerun()
+    
+    # Add theme toggle button in the top right
+    theme_icon = "🌙" if st.session_state.theme == "light" else "🌞"
+    theme_text = "Dark" if st.session_state.theme == "light" else "Light"
+    
+    st.markdown(f"""
+    <div class="theme-toggle" onclick="toggleTheme()">
+        {theme_icon} {theme_text} Mode
+    </div>
+    <script>
+    function toggleTheme() {{
+        // This will be handled by the sidebar selector
+        console.log('Theme toggle clicked');
+    }}
+    </script>
+    """, unsafe_allow_html=True)
+    
     st.markdown('<h1 class="main-header">📰 Fake News Detection System</h1>', unsafe_allow_html=True)
     
-    # Sidebar
-    st.sidebar.title("Navigation")
+    # Sidebar Navigation
+    st.sidebar.markdown("---")
+    st.sidebar.title("📋 Navigation")
     page = st.sidebar.selectbox("Choose a page", ["Prediction", "Model Analysis", "About"])
     
     if page == "Prediction":
@@ -126,18 +275,44 @@ def prediction_page():
                         </div>
                         """, unsafe_allow_html=True)
                     
-                    # Confidence meter
-                    st.subheader("Confidence Meter")
-                    confidence_col1, confidence_col2 = st.columns(2)
+                    # Confidence meter with themed styling
+                    st.subheader("📊 Confidence Analysis")
                     
-                    with confidence_col1:
-                        st.metric("Fake News Probability", f"{result['probabilities']['Fake']:.2%}")
-                    with confidence_col2:
-                        st.metric("Real News Probability", f"{result['probabilities']['Real']:.2%}")
+                    # Create themed metric containers
+                    col1, col2 = st.columns(2)
                     
-                    # Progress bars
-                    st.progress(result['probabilities']['Fake'])
-                    st.caption("Fake News Probability")
+                    with col1:
+                        st.markdown(f"""
+                        <div class="metric-container">
+                            <h4 style="color: #f44336; margin: 0;">🚨 Fake News Probability</h4>
+                            <h2 style="margin: 10px 0;">{result['probabilities']['Fake']:.1%}</h2>
+                            <div style="background: #ffcdd2; height: 10px; border-radius: 5px; overflow: hidden;">
+                                <div style="background: #f44336; height: 100%; width: {result['probabilities']['Fake']*100}%; transition: width 0.5s ease;"></div>
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    with col2:
+                        st.markdown(f"""
+                        <div class="metric-container">
+                            <h4 style="color: #4caf50; margin: 0;">✅ Real News Probability</h4>
+                            <h2 style="margin: 10px 0;">{result['probabilities']['Real']:.1%}</h2>
+                            <div style="background: #c8e6c9; height: 10px; border-radius: 5px; overflow: hidden;">
+                                <div style="background: #4caf50; height: 100%; width: {result['probabilities']['Real']*100}%; transition: width 0.5s ease;"></div>
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    # Overall confidence indicator
+                    st.markdown("### 🎯 Overall Confidence")
+                    confidence_color = "#4caf50" if result['confidence'] > 0.7 else "#ff9800" if result['confidence'] > 0.5 else "#f44336"
+                    st.markdown(f"""
+                    <div style="text-align: center; padding: 1rem;">
+                        <div style="display: inline-block; padding: 10px 20px; background: {confidence_color}; color: white; border-radius: 25px; font-size: 1.2em; font-weight: bold;">
+                            {result['confidence']:.1%} Confident
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
                     
                 except Exception as e:
                     st.error(f"Error analyzing article: {str(e)}")
@@ -172,13 +347,37 @@ def analysis_page():
         else:
             col4.metric(model, f"{accuracy:.2%}")
     
-    # Performance chart
-    st.subheader("Accuracy Comparison")
-    fig, ax = plt.subplots(figsize=(10, 6))
-    bars = ax.bar(performance_df['Model'], performance_df['Accuracy'], color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'])
-    ax.set_ylabel('Accuracy')
-    ax.set_title('Model Performance Comparison')
+    # Performance chart with theme-aware styling
+    st.subheader("📈 Accuracy Comparison")
+    fig, ax = plt.subplots(figsize=(12, 7))
+    
+    # Theme-aware colors
+    if st.session_state.theme == 'dark':
+        fig.patch.set_facecolor('#0e1117')
+        ax.set_facecolor('#0e1117')
+        text_color = '#fafafa'
+        grid_color = '#404040'
+    else:
+        fig.patch.set_facecolor('white')
+        ax.set_facecolor('white')
+        text_color = '#262626'
+        grid_color = '#e0e0e0'
+    
+    # Create gradient bars
+    colors = ['#64b5f6', '#ff7043', '#66bb6a', '#ab47bc']
+    bars = ax.bar(performance_df['Model'], performance_df['Accuracy'], 
+                  color=colors, alpha=0.8, edgecolor=text_color, linewidth=1.5)
+    
+    # Styling
+    ax.set_ylabel('Accuracy', color=text_color, fontsize=12)
+    ax.set_title('Model Performance Comparison', color=text_color, fontsize=14, fontweight='bold')
     ax.set_ylim(0, 1)
+    ax.tick_params(colors=text_color)
+    ax.grid(True, alpha=0.3, color=grid_color)
+    ax.spines['bottom'].set_color(text_color)
+    ax.spines['left'].set_color(text_color)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
     
     # Add value labels on bars
     for bar in bars:
@@ -234,6 +433,8 @@ def about_page():
     - **TF-IDF Vectorization**: Converts text to numerical features
     - **Interactive Interface**: Easy-to-use web interface for real-time predictions
     - **Model Comparison**: Performance analysis and visualization
+    - **🎨 Theme Support**: Beautiful dark and light modes for better user experience
+    - **📱 Responsive Design**: Works seamlessly on all devices
     
     ## How It Works
     1. **Text Preprocessing**: Clean and normalize the input text
@@ -275,8 +476,43 @@ def about_page():
     - Sample dataset is limited for demonstration purposes
     """)
     
+    # Theme showcase
+    st.markdown("---")
+    st.markdown("## 🎨 Theme Showcase")
+    
+    current_theme = st.session_state.theme
+    theme_demo_col1, theme_demo_col2 = st.columns(2)
+    
+    with theme_demo_col1:
+        st.markdown(f"""
+        <div class="metric-container" style="text-align: center;">
+            <h4>🌞 Light Mode</h4>
+            <p>Clean, bright interface perfect for daytime use</p>
+            <div style="background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%); padding: 20px; border-radius: 10px; border: 2px solid {'#1f77b4' if current_theme == 'light' else '#ccc'};">
+                <div style="color: #1f77b4; font-weight: bold;">Currently {'Active' if current_theme == 'light' else 'Inactive'}</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with theme_demo_col2:
+        st.markdown(f"""
+        <div class="metric-container" style="text-align: center;">
+            <h4>🌙 Dark Mode</h4>
+            <p>Easy on the eyes for extended use and low-light environments</p>
+            <div style="background: linear-gradient(135deg, #0e1117 0%, #262730 100%); padding: 20px; border-radius: 10px; border: 2px solid {'#64b5f6' if current_theme == 'dark' else '#ccc'};">
+                <div style="color: #64b5f6; font-weight: bold;">Currently {'Active' if current_theme == 'dark' else 'Inactive'}</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.info("💡 **Tip**: Switch themes using the selector in the sidebar to see the difference!")
+    
     st.markdown("---")
     st.markdown("**Developed for educational and research purposes**")
+    
+    # Add current theme indicator
+    theme_icon = "🌙" if current_theme == "dark" else "🌞"
+    st.markdown(f"<div style='text-align: center; opacity: 0.7; margin-top: 20px;'>Currently using {theme_icon} {current_theme.title()} Mode</div>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
