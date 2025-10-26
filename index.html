@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detection System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .prediction-real {
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+        }
+        .prediction-fake {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+        }
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-center">
+                <i class="fas fa-newspaper text-3xl mr-3"></i>
+                <h1 class="text-4xl font-bold">Fake News Detection System</h1>
+            </div>
+            <p class="text-center mt-2 text-lg opacity-90">AI-Powered News Authenticity Analyzer</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Input Section -->
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white rounded-lg card-shadow p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-search text-blue-600 mr-2"></i>
+                    Analyze News Article
+                </h2>
+                
+                <!-- Sample Articles -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Quick Test Samples:</label>
+                    <select id="sampleSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Select a sample article...</option>
+                        <option value="real">Real News Sample</option>
+                        <option value="fake">Fake News Sample</option>
+                    </select>
+                </div>
+
+                <!-- Text Input -->
+                <div class="mb-4">
+                    <label for="newsText" class="block text-sm font-medium text-gray-700 mb-2">
+                        Enter News Article Text:
+                    </label>
+                    <textarea 
+                        id="newsText" 
+                        rows="8" 
+                        class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                        placeholder="Paste your news article here for analysis..."
+                    ></textarea>
+                </div>
+
+                <!-- Model Selection -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Analysis Model:</label>
+                    <select id="modelSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="naive_bayes">Naive Bayes (Fast & Accurate)</option>
+                        <option value="random_forest">Random Forest (Robust)</option>
+                        <option value="logistic_regression">Logistic Regression (Interpretable)</option>
+                        <option value="svm">Support Vector Machine (Precise)</option>
+                    </select>
+                </div>
+
+                <!-- Analyze Button -->
+                <button 
+                    id="analyzeBtn" 
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center"
+                >
+                    <i class="fas fa-brain mr-2"></i>
+                    Analyze Article
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="hidden">
+                <div class="bg-white rounded-lg card-shadow p-6 mb-8 fade-in">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-chart-line text-green-600 mr-2"></i>
+                        Analysis Results
+                    </h2>
+                    
+                    <!-- Prediction Result -->
+                    <div id="predictionResult" class="rounded-lg p-6 text-white text-center mb-6">
+                        <div class="text-3xl font-bold mb-2" id="predictionText"></div>
+                        <div class="text-lg" id="confidenceText"></div>
+                    </div>
+
+                    <!-- Detailed Metrics -->
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                <i class="fas fa-percentage text-blue-600 mr-2"></i>
+                                Probability Scores
+                            </h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm text-gray-600">Real News</span>
+                                        <span class="text-sm font-medium" id="realProb">0%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full transition-all duration-500" id="realBar"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm text-gray-600">Fake News</span>
+                                        <span class="text-sm font-medium" id="fakeProb">0%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-red-500 h-2 rounded-full transition-all duration-500" id="fakeBar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                <i class="fas fa-info-circle text-purple-600 mr-2"></i>
+                                Analysis Details
+                            </h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Model Used:</span>
+                                    <span class="font-medium" id="modelUsed">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Processing Time:</span>
+                                    <span class="font-medium" id="processingTime">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Word Count:</span>
+                                    <span class="font-medium" id="wordCount">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Confidence Level:</span>
+                                    <span class="font-medium" id="confidenceLevel">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-lg card-shadow p-6 text-center">
+                    <i class="fas fa-robot text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">AI-Powered</h3>
+                    <p class="text-gray-600">Advanced machine learning algorithms trained on thousands of articles</p>
+                </div>
+                <div class="bg-white rounded-lg card-shadow p-6 text-center">
+                    <i class="fas fa-bolt text-4xl text-yellow-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Real-Time</h3>
+                    <p class="text-gray-600">Instant analysis and results in seconds</p>
+                </div>
+                <div class="bg-white rounded-lg card-shadow p-6 text-center">
+                    <i class="fas fa-shield-alt text-4xl text-green-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Reliable</h3>
+                    <p class="text-gray-600">Multiple model validation for accurate predictions</p>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="bg-white rounded-lg card-shadow p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                    How It Works
+                </h2>
+                <div class="grid md:grid-cols-4 gap-4 text-center">
+                    <div class="p-4">
+                        <div class="bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                            <span class="text-blue-600 font-bold">1</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">Input Text</h4>
+                        <p class="text-sm text-gray-600">Paste your news article</p>
+                    </div>
+                    <div class="p-4">
+                        <div class="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                            <span class="text-green-600 font-bold">2</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">Process</h4>
+                        <p class="text-sm text-gray-600">AI analyzes language patterns</p>
+                    </div>
+                    <div class="p-4">
+                        <div class="bg-purple-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                            <span class="text-purple-600 font-bold">3</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">Classify</h4>
+                        <p class="text-sm text-gray-600">Model predicts authenticity</p>
+                    </div>
+                    <div class="p-4">
+                        <div class="bg-orange-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                            <span class="text-orange-600 font-bold">4</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">Results</h4>
+                        <p class="text-sm text-gray-600">Get confidence scores</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 Fake News Detection System. Built with AI for educational purposes.</p>
+            <p class="text-sm text-gray-400 mt-2">Powered by Machine Learning & Natural Language Processing</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

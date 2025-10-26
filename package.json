@@ -1,0 +1,21 @@
+{
+  "name": "fake-news-detector",
+  "version": "1.0.0",
+  "description": "AI-powered fake news detection system",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'",
+    "start": "echo 'Open index.html in browser'"
+  },
+  "keywords": [
+    "fake-news",
+    "detection",
+    "ai",
+    "machine-learning",
+    "nlp"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {}
+}
