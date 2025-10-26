@@ -1,6 +1,6 @@
-# 🚀 Deploy to Streamlit Cloud - Get Your Live Link!
+# Deploy to Streamlit Cloud 
 
-## 🎯 Quick Deployment Steps
+## Quick Deployment Steps
 
 ### Step 1: Prepare Your GitHub Repository
 
@@ -42,40 +42,29 @@
 
 7. **Get your live URL**: `https://fake-news-detector-ai.streamlit.app`
 
-## 📁 Files Ready for Upload
+## Your Live App Features
 
-Your project includes these essential files:
-
-- ✅ **streamlit_app.py** - Beautiful web interface with 3 pages
-- ✅ **fake_news_detector.py** - Complete ML pipeline with 4 models (with NLTK fallbacks)
-- ✅ **setup_nltk.py** - NLTK data setup script for cloud deployment
-- ✅ **requirements.txt** - Optimized Python dependencies
-- ✅ **packages.txt** - System-level dependencies
-- ✅ **README.md** - Project documentation
-
-## 🎉 Your Live App Features
-
-### 🔍 **Prediction Page**:
+### **Prediction Page**:
 - Real-time fake news detection
 - 4 different ML models to choose from
 - Sample articles for quick testing
 - Confidence scores and probability meters
 - Beautiful visual feedback
 
-### 📊 **Model Analysis Page**:
+### **Model Analysis Page**:
 - Performance comparison charts
 - Confusion matrices for each model
 - Feature importance analysis
 - Dataset statistics
 - Interactive visualizations
 
-### ℹ️ **About Page**:
+### **About Page**:
 - Complete system documentation
 - Technical details and methodology
 - Usage tips and limitations
 - Model explanations
 
-## 🚀 Alternative: Quick Upload Method
+## Alternative: Quick Upload Method
 
 If you prefer not to use Git:
 
@@ -89,7 +78,7 @@ If you prefer not to use Git:
 4. **Commit the files**
 5. **Follow Step 2 above**
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Common Issues:
 
@@ -110,7 +99,7 @@ If you prefer not to use Git:
 - **Subsequent loads**: 5-10 seconds
 - **Model training**: Happens automatically on first use
 
-## 📊 Your Live App Will Have:
+## Your Live App Will Have:
 
 - **URL**: `https://your-app-name.streamlit.app`
 - **Features**: Full ML pipeline with beautiful UI
@@ -118,21 +107,21 @@ If you prefer not to use Git:
 - **Accessibility**: Works on all devices
 - **Analytics**: Built-in Streamlit usage analytics
 
-## 🎯 Sample URLs
+## Sample URLs
 
 Your app will be available at something like:
 - `https://fake-news-detector-ai.streamlit.app`
 - `https://fake-news-ml-detector.streamlit.app`
 - `https://news-authenticity-checker.streamlit.app`
 
-## 📞 Need Help?
+## Need Help?
 
 1. **Check Streamlit logs** in the deployment dashboard
 2. **Verify all files are uploaded** to GitHub
 3. **Ensure requirements.txt** includes all dependencies
 4. **Test locally first**: `streamlit run streamlit_app.py`
 
-## 🌟 Pro Tips
+## Pro Tips
 
 1. **Custom domain**: Available with Streamlit Cloud Pro
 2. **Private repos**: Requires Streamlit Cloud Pro
@@ -141,9 +130,9 @@ Your app will be available at something like:
 
 ---
 
-**Your fake news detection system will be live in minutes! 🌐**
+**Your fake news detection system will be live in minutes!**
 
-## 🎉 What Happens Next
+## What Happens Next
 
 1. **Deploy following the steps above**
 2. **Share your live URL** with others
@@ -151,4 +140,4 @@ Your app will be available at something like:
 4. **Monitor usage** via Streamlit analytics
 5. **Update easily** by pushing to GitHub
 
-Your professional ML application will be accessible worldwide! 🚀
+Your professional ML application will be accessible worldwide!
