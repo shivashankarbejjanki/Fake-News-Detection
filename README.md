@@ -2,7 +2,7 @@
 
 A comprehensive machine learning project for detecting fake news articles using multiple ML algorithms and natural language processing techniques.
 
-## 🚀 Features
+## Features
 
 - **Multiple ML Models**: Naive Bayes, Random Forest, Logistic Regression, and SVM
 - **Advanced Text Processing**: NLTK-based preprocessing with stemming and stopword removal
@@ -11,7 +11,7 @@ A comprehensive machine learning project for detecting fake news articles using 
 - **Visualization**: Word clouds, confusion matrices, and performance charts
 - **Model Comparison**: Side-by-side evaluation of different algorithms
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Fake news Detection/
@@ -24,7 +24,7 @@ Fake news Detection/
 └── word_clouds.png           # Generated word cloud visualizations
 ```
 
-## 🛠️ Installation
+## Installation
 
 1. **Clone or download the project files**
 
@@ -40,7 +40,7 @@ Fake news Detection/
    nltk.download('stopwords')
    ```
 
-## 🎯 Usage
+## Usage
 
 ### 1. Command Line Interface
 
@@ -83,7 +83,7 @@ Includes:
 - Feature importance analysis
 - Interactive prediction testing
 
-## 🧠 Machine Learning Models
+## Machine Learning Models
 
 ### 1. Naive Bayes
 - **Algorithm**: Multinomial Naive Bayes
@@ -129,7 +129,7 @@ def preprocess_text(text):
 - **Stratified Sampling**: Maintain class distribution
 - **Cross-Validation**: Built-in model evaluation
 
-## 📈 Performance Metrics
+## Performance Metrics
 
 The system evaluates models using:
 
@@ -139,7 +139,7 @@ The system evaluates models using:
 - **F1-Score**: Harmonic mean of precision and recall
 - **Confusion Matrix**: Detailed classification breakdown
 
-## 🎨 Visualizations
+## Visualizations
 
 ### 1. Model Performance
 - Accuracy comparison charts
@@ -156,7 +156,7 @@ The system evaluates models using:
 - Content length analysis
 - Sample article comparisons
 
-## 🔧 Customization
+## Customization
 
 ### Adding New Models
 
@@ -189,7 +189,7 @@ def custom_preprocess_text(self, text):
     pass
 ```
 
-## 📚 Dataset Information
+## Dataset Information
 
 ### Current Dataset
 - **Type**: Sample demonstration dataset
@@ -214,7 +214,7 @@ def custom_preprocess_text(self, text):
    - Various sizes and formats available
    - Community-contributed datasets
 
-## 🚀 Future Enhancements
+## Future Enhancements
 
 ### 1. Advanced NLP
 - **BERT Integration**: Use pre-trained transformers
@@ -237,7 +237,7 @@ def custom_preprocess_text(self, text):
 - **Model Monitoring**: Performance tracking over time
 - **A/B Testing**: Compare model versions
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -271,11 +271,11 @@ def custom_preprocess_text(self, text):
    - Implement incremental learning
    - Clear unused variables
 
-## 📄 License
+## License
 
 This project is for educational and research purposes. Please ensure compliance with dataset licenses when using external data.
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -283,20 +283,17 @@ This project is for educational and research purposes. Please ensure compliance 
 4. Add tests if applicable
 5. Submit a pull request
 
-## 📞 Support
+## Support
 
 For questions or issues:
 1. Check the troubleshooting section
 2. Review the Jupyter notebook for detailed examples
 3. Examine the code comments for implementation details
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **NLTK**: Natural Language Toolkit for text processing
 - **Scikit-learn**: Machine learning library
 - **Streamlit**: Web application framework
 - **Matplotlib/Seaborn**: Data visualization libraries
 
----
-
-**Note**: This system is designed for educational purposes. For production use, consider training on larger, more diverse datasets and implementing additional validation measures.
