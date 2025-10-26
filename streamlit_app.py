@@ -1,8 +1,15 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import pickle
 import os
+
+# Setup NLTK first
+try:
+    from setup_nltk import setup_nltk
+    setup_nltk()
+except Exception as e:
+    st.warning(f"NLTK setup warning: {e}")
+
 from fake_news_detector import FakeNewsDetector
 import matplotlib.pyplot as plt
 import seaborn as sns

@@ -31,16 +31,33 @@ class FakeNewsDetector:
         self.trained_models = {}
         self.stemmer = PorterStemmer()
         
-        # Download required NLTK data
-        try:
-            nltk.data.find('tokenizers/punkt')
-        except LookupError:
-            nltk.download('punkt')
+        # Download required NLTK data with better error handling
+        self._download_nltk_data()
+    
+    def _download_nltk_data(self):
+        """Download required NLTK data with robust error handling"""
+        import ssl
         
         try:
-            nltk.data.find('corpora/stopwords')
-        except LookupError:
-            nltk.download('stopwords')
+            # Handle SSL certificate issues
+            _create_unverified_https_context = ssl._create_unverified_context
+        except AttributeError:
+            pass
+        else:
+            ssl._create_default_https_context = _create_unverified_https_context
+        
+        # Download required datasets
+        datasets = ['punkt', 'stopwords']
+        for dataset in datasets:
+            try:
+                nltk.data.find(f'tokenizers/{dataset}' if dataset == 'punkt' else f'corpora/{dataset}')
+            except LookupError:
+                try:
+                    print(f"Downloading NLTK {dataset}...")
+                    nltk.download(dataset, quiet=True)
+                except Exception as e:
+                    print(f"Warning: Could not download NLTK {dataset}: {e}")
+                    # Continue without failing - use fallback methods
     
     def preprocess_text(self, text):
         """Clean and preprocess text data"""
@@ -53,12 +70,27 @@ class FakeNewsDetector:
         # Remove special characters and digits
         text = re.sub(r'[^a-zA-Z\s]', '', text)
         
-        # Tokenize
-        tokens = word_tokenize(text)
+        # Tokenize with fallback
+        try:
+            tokens = word_tokenize(text)
+        except:
+            # Fallback: simple split if NLTK fails
+            tokens = text.split()
         
-        # Remove stopwords and stem
-        stop_words = set(stopwords.words('english'))
-        tokens = [self.stemmer.stem(token) for token in tokens if token not in stop_words]
+        # Remove stopwords and stem with fallback
+        try:
+            stop_words = set(stopwords.words('english'))
+        except:
+            # Fallback: basic English stopwords
+            stop_words = {'a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from', 
+                         'has', 'he', 'in', 'is', 'it', 'its', 'of', 'on', 'that', 'the', 
+                         'to', 'was', 'will', 'with', 'would', 'could', 'should'}
+        
+        try:
+            tokens = [self.stemmer.stem(token) for token in tokens if token not in stop_words]
+        except:
+            # Fallback: just remove stopwords without stemming
+            tokens = [token for token in tokens if token not in stop_words]
         
         return ' '.join(tokens)
     
